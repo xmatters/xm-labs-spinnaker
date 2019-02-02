@@ -1,17 +1,37 @@
-# Automating with xMatters
-### Setup steps
+# Spinnaker <--> xMatters integration
+This is part of the xMatters Labs awesome listing. For others, see [here](https://github.com/xmatters/xMatters-Labs)
+With this Outbound Integration, notification recipients can quickly continue a pipeline that requires a user response to do something via spinnaker
 
-- Note: this assumes you have created an image running spinnaker in gcp
+This document details how to install and use this integration. 
 
-1. Navigate to your spinnaker endpoint in the browser. This will either be an external IP or url if you have one set ur, or localhost:9000 if you are using an ssh tunnel
+---------
+
+<kbd>
+<img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+</kbd>
+
+---------
+# Pre-Requisites
+* A spinnaker application with either an exposed gate port using some form of authentication or a local deployment with the xMatters agent installed
+* A communication plan - use [this example](./SpinnakerExample.zip) plan to start
+* xMatters account - If you don't have one, [get one](https://www.xmatters.com)! 
+
+# Files
+* [SpinnakerExample.zip](./SpinnakerExample.zip) - Example Communication Plan, easiest deployment strategy to get a spinnaker integration quickly working
+* [InboundScript.js](./InboundScript.js) - This is the inbound resonse script that responds to the Spinnaker webhook when a pipeline starts 
+* [OutboundScript.js](./OutboundScript.js) - This is the outbound response script that accepts the response from the notification recipient, inspects the response option selected, then continues (or stops) the spinnaker pipeline using the selected option
+
+# Installation
+## Spinnaker setup
+1. Navigate to your spinnaker endpoint in the browser. This will either be an external IP or url if you have one set, or localhost:9000 if you are using an ssh tunnel
 2. From the homepage, click `Actions` > `Create Application`
 3. Fill in the name and email address fields, then click `Create`
 4. Click `Pipelines`, then create a new pipeline
-5. Configure your pipeline, an example of an integration to xMatters is below, the basic idea is (some prerequisite) -> (manual judgment) -> (different branches based on user response)
+5. Configure your pipeline, an example of an integration to xMatters is below, the basic idea is (some prerequisite) -> (webhook to xMatters) -> (manual judgment) -> (different branches based on user response)
 
 - - - -
 
-# xMatters Pipeline:
+## xMatters Pipeline:
 In a pipeline that integrates spinnaker with xMatters, there will be five main things that need to be configured:
 1. A `Webhook` stage in the spinnaker pipeline that fires off a notification to xMatters
 2. A `Manual Judgment` stage in spinnaker that pauses the pipeline until a user response is received from xMatters
@@ -73,6 +93,7 @@ Now we will set up the communication plan in xMatters. The simplest option is to
 4. Find `Spinnaker Example` under your Communication Plans, then click `Edit` > `Integration Builder`
 5. Click `Edit Endpoints` and change the the endpoint to your exposed spinnaker address (Note, if you are using a local deployment or an endpoint that isn't exposed publicly you will have to use an agent, see [xMatters Agent](https://help.xmatters.com/ondemand/xmodwelcome/xmattersagent/xmatters-agent-topic.htm) for help setting it up; in this case, you will be running the script on the agent, and the endpoint will be `http://localhost:8084`)
 6. Save your endpoint, then click the Outbound integration `Spinnaker Response`, and scroll down and click on `Edit Script`.
+## Outbound Response Script - Sending back to Spinnaker
 Next we will customize the response options.
 1. Navigate to the Forms section of the Communication Plan.
 2. For the `Pipeline Started` form, click on `Edit` > `Responses`
@@ -96,7 +117,8 @@ body.judgmentInput = 'stop'; //This doesn't need to be an input in the Manual Ju
 ```
 * replace the `Deploy to Dev` and `Deploy to Test` to whatever you named the Responses in the Inbound Integration. Note, you do not need to have a `Stop` option, and you can have as few or as many options as you like, as long as they have a matching `judgmentInput` - the name of one of the inputs you defined in the Spinnaker Manual Judgment stage
 7. Click `Save`, then exit the script editor. You're done with the xMatters side!
-### Deploy to Dev/Deploy to Test Stage: 
+## Spinnaker continuation - Deploy to Dev/Deploy to Test Stage: 
+### Deploy to Dev Stage
 For this example we are simply sending a message back to xMatters, but you can use any of spinnaker's functionality following the manual judgment stage. 
 A simple `Deploy to Dev` stage that just sends a message to xMatters
 ![Deploy to Dev Stage](./media/deploy_dev.png)
