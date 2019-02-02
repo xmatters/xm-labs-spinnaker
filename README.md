@@ -103,7 +103,7 @@ A simple `Deploy to Dev` stage that just sends a message to xMatters
 
 The contents of the stage are not important for this example, you can use any spinnaker stage here you would like to, and have it do whatever you want; what is crutial is the `Conditional on Expression`:
 
-* The `Conditional on Expression` should be set assert that the manual judgment stage evaluated to the value that should kick off this stage. 
+* The `Conditional on Expression` should be set to assert that the manual judgment stage evaluated to the value that should kick off this stage. 
 * So, for the `Deploy to Dev` stage to be run, we want to make sure the manual judgment evaluated to `Deploy to Dev`. If the xMatters outbound script was set up correctly, then this stage will only fire whenever someone responds to the xMatters notification with the `Deploy to Dev` option. 
 * Troubleshooting: If it is failing, make sure you changed the if statements in the outbound script to match the response options and you set the `judgmentInput`s to match the inputs in spinnaker.
 `${#judgment("Wait for user response") == 'Deploy to Dev'}`
