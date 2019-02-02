@@ -99,7 +99,7 @@ body.judgmentInput = 'stop'; //This doesn't need to be an input in the Manual Ju
 ### Deploy to Dev/Deploy to Test Stage: 
 For this example we are simply sending a message back to xMatters, but you can use any of spinnaker's functionality following the manual judgment stage. 
 A simple `Deploy to Dev` stage that just sends a message to xMatters
-![Deploy to Dev Stage](./media/deploydev.png)
+![Deploy to Dev Stage](./media/deploy_dev.png)
 
 The contents of the stage are not important for this example, you can use any spinnaker stage here you would like to, and have it do whatever you want; what is crutial is the `Conditional on Expression`:
 The `Conditional on Expression` should be set assert that the manual judgment stage evaluated to the value that should kick off this stage. So, for the `Deploy to Dev` stage to be run, we want to make sure the manual judgment evaluated to `Deploy to Dev`. If the xMatters outbound script was set up correctly, then this stage will only fire whenever someone responds to the xMatters notification with the `Deploy to Dev` option. If it is failing, make sure you changed the if statements in the outbound script to match the response options and you set the `judgmentInput`s to match the inputs in spinnaker.
@@ -108,7 +108,7 @@ The `Conditional on Expression` should be set assert that the manual judgment st
 * Note: `Wait for user response` is the name of the **Manual Judgment** step, and `Deploy to Dev` is the value of the judgment response
 
 ### Deploy to Test Stage: 
-![Screenshot](./media/deploytest.png)
+![Deploy to Test](./media/deploy_test.png)
 
 Conditional on Expression:
 `${#judgment("xMatters") == 'Deploy to Test'}`
