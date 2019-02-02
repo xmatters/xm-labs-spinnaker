@@ -115,7 +115,7 @@ The contents of the stage are not important for this example, you can use any sp
 ![Deploy to Test](./media/deploy_test.png)
 
 Conditional on Expression:
-`${#judgment("xMatters") == 'Deploy to Test'}`
+`${#judgment("Wait for user response") == 'Deploy to Test'}`
 ![Deploy Test Conditional](./media/depends_on_test.png)
 
 There you have it, a simple integration that you can make as complicated as you desire! Happy integrating :)
