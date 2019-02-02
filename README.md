@@ -61,11 +61,9 @@ Overview:
 The manual judgment stage is normally used in spinnaker to require a user to response inside the spinnaker application in order for the pipeline to continue. Spinnaker does have a email feature, but this only gives you a link to the pipeline, at which point you can choose an option. With xMatters, we can customize response options and have the pipeline be continued all with one click via email response options. For our purposes, the manual judgment stage serves as a "pause" in the pipeline while xMatters waits for the user response
 
 An example of a manual judgment stage
-![Manual Judgment](./images/manual_judgment.png)
+![Manual Judgment](./media/manual_judgment.png)
 
 You may either define your own judgment inputs or use leave it blank to use the defaults of  `continue` and `stop`. If you plan to have multiple response options in xMatters with a couple different resulting stages that will fire depending on the response, you should define a judgment input for each of these.
-Example judgment inputs:
-![Judgment Inputs](./media/judgment_inputs)
 
 ## Inbound Response Script - Receiving in xMatters
 Now we will set up the communication plan in xMatters. The simplest option is to import our [example Communication Plan](./SpinnakerExample.zip) and modify it however you like. To do this:
