@@ -102,6 +102,7 @@ A simple `Deploy to Dev` stage that just sends a message to xMatters
 ![Deploy to Dev Stage](./media/deploy_dev.png)
 
 The contents of the stage are not important for this example, you can use any spinnaker stage here you would like to, and have it do whatever you want; what is crutial is the `Conditional on Expression`:
+![Deploy Dev Conditional](./media/depends_on_dev.png)
 
 * The `Conditional on Expression` should be set to assert that the manual judgment stage evaluated to the value that should kick off this stage. 
 * So, for the `Deploy to Dev` stage to be run, we want to make sure the manual judgment evaluated to `Deploy to Dev`. If the xMatters outbound script was set up correctly, then this stage will only fire whenever someone responds to the xMatters notification with the `Deploy to Dev` option. 
@@ -115,5 +116,6 @@ The contents of the stage are not important for this example, you can use any sp
 
 Conditional on Expression:
 `${#judgment("xMatters") == 'Deploy to Test'}`
+![Deploy Test Conditional](./media/depends_on_test.png)
 
 There you have it, a simple integration that you can make as complicated as you desire! Happy integrating :)
