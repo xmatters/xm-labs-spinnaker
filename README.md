@@ -126,7 +126,7 @@ For this example we are simply sending a message back to xMatters, but you can u
 A simple `Deploy to Dev` stage that just sends a message to xMatters
 ![Deploy to Dev Stage](./media/deploy_dev.png)
 
-The contents of the stage are not important for this example, you can use any Spinnaker stage here you would like to, and have it do whatever you want; what is crutial is the `Conditional on Expression`:
+The contents of the stage are not important for this example, you can use any Spinnaker stage here you would like to, and have it do whatever you want; what is crutial is the `Conditional on Expression`. In the example below, we have it set to `${#judgment("Wait for user response") == 'Deploy to Test'}` 
 ![Deploy Dev Conditional](./media/depends_on_dev.png)
 
 * The `Conditional on Expression` should be set to assert that the manual judgment stage evaluated to the value that should kick off this stage. 
