@@ -21,6 +21,9 @@ This document details how to install and use this integration.
 * [InboundScript.js](./InboundScript.js) - This is the inbound resonse script that responds to the Spinnaker webhook when a pipeline starts 
 * [OutboundScript.js](./OutboundScript.js) - This is the outbound response script that accepts the response from the notification recipient, inspects the response option selected, then continues (or stops) the Spinnaker pipeline using the selected option
 
+# Introduction - How it works
+Spinnaker is a simple yet elegant application that allows the user to customize a wide range of inputs to result in many different outcomes, depending on what you desire. One thing it is somewhat lacking is a simple way to allow for user input directly from an email or phone, which is where xMatters comes in. In any Spinnaker pipeline, it is very simple to insert a webhook that fires off a notification to xMatters, then continue the pipeline selecting a stage based on user input, and this guide will show you how to set this up, using an example that "Deploy"s to Dev or Test. We will not actually be deploying anything, but it is just one example of what you could do using Spinnaker's stages that run a Jenkins job.
+
 # Installation
 ## Spinnaker setup
 1. Navigate to your Spinnaker endpoint in the browser. This will either be an external IP or url if you have one set, or localhost:9000 if you are using an ssh tunnel
@@ -72,10 +75,10 @@ Here is an example payload to send to xMatters:
 ```
 It is very important to include the respective `judgment_id` , `pipeline_id`, and `pipeline_name`, some notes on these values:
 - Inside the Spinnaker payload, there are many provided variables you can pass to xMatters, some that we must have to communicate with Spinnaker:
-- `${execution[‘stages’][0][‘id’]}` - the id of the manual judgment stage, in the example we are working with, this is the `Wait for user response` stage. You will have to find the stage yourself by type `${execution[` then scrolling through the autofilled values and selecting the `id` value containing the id that correlates with the manual judgment stage, as shown in the screenshot below — Note how we are selecting the manual judgment stage, **not** the webhook stage.
+- `${execution['stages'][0]['id']}` - the id of the manual judgment stage, in the example we are working with, this is the `Wait for user response` stage. You will have to find the stage yourself by type `${execution[` then scrolling through the autofilled values and selecting the `id` value containing the id that correlates with the manual judgment stage, as shown in the screenshot below — Note how we are selecting the manual judgment stage, **not** the webhook stage.
 ![Manual Judgment ID](./media/judgment_id.png)
 
-- `${execution[‘id’]}` - the id of the current execution of the pipeline (not to be confused with `${execution['pipelineConfigId’]}`, which is the id of the pipeline, that stays the same across each execution; this cannot be used to fire curl commands and is not useless for this example)
+- `${execution['id']}` - the id of the current execution of the pipeline (not to be confused with `${execution['pipelineConfigId']}`, which is the id of the pipeline, that stays the same across each execution; this cannot be used to fire curl commands and is not useless for this example)
 ## Manual Judgment Stage: 
 Overview:
 The manual judgment stage is normally used in Spinnaker to require a user to response inside the Spinnaker application in order for the pipeline to continue. Spinnaker does have a email feature, but this only gives you a link to the pipeline, at which point you can choose an option. With xMatters, we can customize response options and have the pipeline be continued all with one click via email response options. For our purposes, the manual judgment stage serves as a "pause" in the pipeline while xMatters waits for the user response
@@ -141,3 +144,13 @@ Conditional on Expression:
 ![Deploy Test Conditional](./media/depends_on_test.png)
 
 There you have it, a simple integration that you can make as complicated as you desire! Happy integrating :)
+
+# Troubleshooting
+The first place to check is the Activity Stream in the Inbound Integration. This will determine if the xMatters endpoint was called from Stackdriver (or not) and will show any errors encountered during processing.
+
+If the event was successfully created, then check the Event Log on the Reports tab to determine why the designated recipient was not notified.
+
+A couple of common issues:
+* Not using the correct judgment id in the Spinnaker --> xMatters payload. Make sure you are selecting the id of the stage that is the manual judgment.
+* The if statements in the xMatters outbound response script not matching the Response options you define in the respective form. Double check these if the xMatters outbound seems to work but nothing is happening in Spinnaker.
+* The judgmentInput in the xMatters outbound payload not matching the judgment inputs in Spinnaker. Double check that the body.judgmentInput is set to the lower cased Spinnaker judgment inputs, or `continue`/`stop` if you didn't create your own, and check that body.judgmentStatus is set to `continue` if the response option is meant to continue the pipeline
