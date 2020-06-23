@@ -7,17 +7,19 @@ This document details how to install and use this integration.
 ---------
 
 <kbd>
-<img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+<a href="https://support.xmatters.com/hc/en-us/community/topics">
+   <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+</a>
 </kbd>
 
 ---------
 # Pre-Requisites
 * A Spinnaker application with either an exposed gate port using some form of authentication or a local deployment with the xMatters agent installed
-* A communication plan - use [this example](./SpinnakerExample.zip) plan to start
+* A workflow - use [this example](./SpinnakerExample.zip) plan to start
 * xMatters account - If you don't have one, [get one](https://www.xmatters.com)! 
 
 # Files
-* [SpinnakerExample.zip](./SpinnakerExample.zip) - Example Communication Plan, easiest deployment strategy to get a Spinnaker integration quickly working
+* [SpinnakerExample.zip](./SpinnakerExample.zip) - Example workflow, easiest deployment strategy to get a Spinnaker integration quickly working
 * [InboundScript.js](./InboundScript.js) - This is the inbound resonse script that responds to the Spinnaker webhook when a pipeline starts 
 * [OutboundScript.js](./OutboundScript.js) - This is the outbound response script that accepts the response from the notification recipient, inspects the response option selected, then continues (or stops) the Spinnaker pipeline using the selected option
 
@@ -53,7 +55,7 @@ Here is an example webhook stage:
 ![Webhook Stage](./media/webhook_stage.png)
 
 Things that need to be configured are:
-- Webhook URL: This is the Url in the xMatters Inbound Integration, we will create the Communication Plan in xMatters later and fill this in (fill it in now if you already have an inbound integration set up)
+- Webhook URL: This is the Url in the xMatters Inbound Integration, we will create the workflow in xMatters later and fill this in (fill it in now if you already have an inbound integration set up)
 - Method: cURL method, in this case POST
 - Payload: Payload to send in the cURL POST
 
@@ -89,16 +91,16 @@ An example of a manual judgment stage
 You may either define your own judgment inputs or use leave it blank to use the defaults of  `continue` and `stop`. If you plan to have multiple response options in xMatters with a couple different resulting stages that will fire depending on the response, you should define a judgment input for each of these.
 
 ## Inbound Response Script - Receiving in xMatters
-Now we will set up the communication plan in xMatters. The simplest option is to import our [example Communication Plan](./SpinnakerExample.zip) and modify it however you like. To do this:
+Now we will set up the workflow in xMatters. The simplest option is to import our [example workflow](./SpinnakerExample.zip) and modify it however you like. To do this:
 1. Download the [example](./SpinnakerExample.zip) onto your local machine
-2. Navigate to the `Developer` Tab in your xMatters instance, then click on `Import Plan`
+2. Navigate to the `workflows` page in your xMatters instance, then click on `Import Plan`
 3. Click on `Choose file`, then locate the example plan you downloaded and click `Open`
-4. Find `Spinnaker Example` under your Communication Plans, then click `Edit` > `Integration Builder`
+4. Find `Spinnaker Example` under your workflows, then click `Edit` > `Integration Builder`
 5. Click `Edit Endpoints` and change the the endpoint to your exposed Spinnaker address (Note, if you are using a local deployment or an endpoint that isn't exposed publicly you will have to use an agent, see [xMatters Agent](https://help.xmatters.com/ondemand/xmodwelcome/xmattersagent/xmatters-agent-topic.htm) for help setting it up; in this case, you will be running the script on the agent, and the endpoint will be `http://localhost:8084`)
 6. Save your endpoint, then click the Outbound integration `Spinnaker Response`, and scroll down and click on `Edit Script`.
 ## Outbound Response Script - Sending back to Spinnaker
 Next we will customize the response options.
-1. Navigate to the Forms section of the Communication Plan.
+1. Navigate to the Forms section of the workflow.
 2. For the `Pipeline Started` form, click on `Edit` > `Responses`
 3. Change the response options to whatever you would like to use the xMatters - Spinnaker integration for. For example, if you are using it to shutdown a cluster or start up a cluster, you can change the responses to "Shutdown cluster" and "Start up cluster". 
 4. Make sure the responses are customized how you would like them, and click `Save Changes` in the top right.
